@@ -121,21 +121,28 @@
     width: 100%;
     padding: 12px;
     margin: 8px 0;
-    border: 2px solid #ccc;
+    border: 2px solid rgba(60,90,150,0.18);
     border-radius: 10px;
     font-size: 14px;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    animation: formFadeIn 0.8s ease 0.6s forwards;
-    opacity: 0;
-    background: #f8f9fa;
+    transition: box-shadow 0.35s ease, transform 0.35s ease, border-color 0.35s ease;
+    background: linear-gradient(180deg, #fbfdff, #f3f7ff);
+    color: #000; /* deep black for typed text */
+    -webkit-text-fill-color: #000; /* for autofill/text rendering in some browsers */
+    caret-color: #0d47a1;
+    opacity: 1; /* ensure visible while typing */
+    animation: formFadeIn 0.6s ease 0.15s forwards;
+    box-shadow: 0 6px 18px rgba(16,26,63,0.06), inset 0 1px 0 rgba(255,255,255,0.6);
+    backdrop-filter: blur(4px);
   }
   
   input:focus {
     outline: none;
     border-color: #2a5298;
     background: #ffffff;
-    box-shadow: 0 0 15px rgba(42, 82, 152, 0.3);
-    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(42,82,152,0.18), 0 0 12px rgba(42,82,152,0.06);
+    transform: translateY(-2px) scale(1.01);
+    color: #000;
+    -webkit-text-fill-color: #000;
   }
   
   input:hover {
@@ -145,12 +152,77 @@
   @keyframes formFadeIn {
     from {
       opacity: 0;
-      transform: translateY(20px);
+      transform: translateY(18px) rotateX(8deg);
     }
     to {
       opacity: 1;
       transform: translateY(0);
     }
+  }
+
+  /* Placeholder styling */
+  input::placeholder {
+    color: rgba(0,0,0,0.38);
+    font-weight: 500;
+  }
+
+  /* FUTURISTIC / NEON ACCENTS */
+  .container {
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(180deg, rgba(255,255,255,0.92), rgba(245,249,255,0.95));
+    border-radius: 18px;
+    box-shadow: 0 20px 60px rgba(6,12,34,0.35), 0 0 60px rgba(58,123,213,0.06) inset;
+    border: 1px solid rgba(58,123,213,0.12);
+  }
+
+  /* subtle animated highlight */
+  .container::after {
+    content: '';
+    position: absolute;
+    left: -40%;
+    top: -30%;
+    width: 180%;
+    height: 160%;
+    background: radial-gradient(600px 200px at 20% 10%, rgba(99,179,237,0.07), transparent 8%),
+                radial-gradient(500px 160px at 80% 90%, rgba(142,85,255,0.04), transparent 10%);
+    pointer-events: none;
+    transform: rotate(12deg);
+    animation: containerGlow 8s linear infinite;
+  }
+
+  @keyframes containerGlow {
+    0% { transform: translateX(0) rotate(12deg); }
+    50% { transform: translateX(-6%) rotate(10deg); }
+    100% { transform: translateX(0) rotate(12deg); }
+  }
+
+  /* Neon button */
+  button {
+    box-shadow: 0 8px 30px rgba(39, 99, 223, 0.18), 0 0 18px rgba(39,99,223,0.06) inset;
+    border: 1px solid rgba(39,99,223,0.12);
+  }
+
+  button:hover {
+    box-shadow: 0 18px 50px rgba(39, 99, 223, 0.22), 0 0 30px rgba(39,99,223,0.15);
+    transform: translateY(-4px) scale(1.01);
+  }
+
+  /* Animated logos */
+  .logos img {
+    filter: drop-shadow(0 6px 18px rgba(58,123,213,0.12));
+    transform-origin: center;
+    transition: transform 0.6s cubic-bezier(.2,.9,.2,1), opacity 0.6s ease;
+  }
+
+  .logos img:hover {
+    transform: translateY(-6px) rotate(-6deg) scale(1.06);
+    opacity: 1;
+  }
+
+  /* small responsive tweak for large screens */
+  @media (min-width: 900px) {
+    .container { max-width: 520px; padding: 46px 36px; }
   }
   
   /* Button */
@@ -399,15 +471,47 @@
     .subtitle, .info {
       color: #aaa;
     }
-    
-    input {
-      background: #2d2d44;
-      border-color: #444;
-      color: #eee;
+
+    /* keep inputs visually white (glass) even in dark mode per request */
+    input, #section input, input[type="tel"], input[type="text"] {
+      background: rgba(255,255,255,0.94) !important;
+      border-color: rgba(60,90,150,0.12) !important;
+      color: #000 !important;
+      -webkit-text-fill-color: #000 !important;
+      box-shadow: 0 6px 18px rgba(16,26,63,0.06), inset 0 1px 0 rgba(255,255,255,0.6);
     }
-    
+
     input:focus {
       border-color: #64b5f6;
-      box-shadow: 0 0 15px rgba(100, 181, 246, 0.3);
+      box-shadow: 0 8px 30px rgba(42,82,152,0.18), 0 0 12px rgba(42,82,152,0.06);
+      color: #000 !important;
+      -webkit-text-fill-color: #000 !important;
     }
   }
+
+/* Force white glass-style input and deep black text across all modes */
+input, #section input, input[type="tel"], input[type="text"] {
+  background: rgba(255,255,255,0.94) !important;
+  color: #000 !important;
+  -webkit-text-fill-color: #000 !important; /* ensures autofill/text rendering is black */
+  box-shadow: 0 6px 18px rgba(16,26,63,0.06), inset 0 1px 0 rgba(255,255,255,0.6);
+}
+
+input::placeholder {
+  color: rgba(0,0,0,0.40) !important;
+  opacity: 1 !important;
+}
+
+/* Handle browser autofill so background stays white and text stays black */
+input:-webkit-autofill, input:-webkit-autofill:focus {
+  -webkit-text-fill-color: #000 !important;
+  box-shadow: 0 0 0px 1000px rgba(255,255,255,0.94) inset !important;
+  transition: background-color 5000s ease-in-out 0s !important;
+}
+
+/* Ensure readonly name field also shows black text on white glass */
+#name[readonly] {
+  background: rgba(255,255,255,0.94) !important;
+  color: #000 !important;
+  -webkit-text-fill-color: #000 !important;
+}
