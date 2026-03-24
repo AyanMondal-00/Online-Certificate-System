@@ -15,6 +15,10 @@
     align-items: center;
     padding: 15px;
   }
+  .t-shirt{
+     color: rgb(238, 32, 5);
+    margin-top: 10px;
+  }
   
   /* Card */
   .container {
