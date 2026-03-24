@@ -100,6 +100,10 @@
     color: green;
     margin-top: 10px;
   }
+  .t-shirt{
+     color: rgb(238, 32, 5);
+    margin-top: 10px;
+  }
   
   /* Loader */
   .loader {
