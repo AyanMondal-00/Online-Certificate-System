@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Certificate Portal</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="stylesheet" href="style.css">
+
+  <!-- jsPDF -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+
+<body>
+
+<div class="container">
+
+  <!-- Logos -->
+  <div class="logos">
+    <img src="logo.png">
+    <img src="logo1.png">
+  </div>
+
+  <h1 class="title">IPHENGNIA 11.0</h1>
+  <p class="subtitle">Techgonia 8.0 - Certificate Portal</p>
+
+  <p class="info">
+    ⚠️ Enter the same phone number used during fest registration
+  </p>
+
+  <input type="tel" id="phone" placeholder="Enter Phone Number">
+  <button onclick="verify()">Verify</button>
+
+  <!-- Message -->
+  <p id="msg"></p>
+
+  <div id="section" style="display:none;">
+    <h3 class="success">Eligible ✅</h3>
+
+    <input type="text" id="name" readonly>
+    <button onclick="generatePDF()">Download Certificates</button>
+  </div>
+
+  <!-- Loader -->
+  <div id="loader" class="loader" style="display:none;"></div>
+
+</div>
+
+<script>
+const { jsPDF } = window.jspdf;
+
+// 🔥 PASTE YOUR EXCEL DATA HERE
+const students = {
+    "6290488486":"DEBAPRIYO BISWAS",
+"7003991759":"SHIVAM DAS",
+"6289674451":"ANKIT BHOWMICK",
+"9476308832":"D SAHIL RAO",
+"7477575697":"ANTRA SHARMA",
+"6289770047":"SUMAN SAHA",
+"8585050959":"SOUMYAJIT DAS",
+"6297928454":"SOUMENDU RAHA",
+"7872768795":"SUBHAJIT KABIRAJ",
+"6290170462":"SAMANNAY KABIRAJ",
+"9832536201":"AVIK MONDAL",
+"9046805366":"SAYANTIKA DAFADAR",
+"9073271404":"PRINCE",
+"9875544500":"MANAS JANA",
+"7278769117":"DEEP DAS",
+"7811996026":"DEBJIT MONDAL",
+"6297303202":"MANJISTHA ROY CHOWDHURY",
+"6289083673":"ANNYASHA GUHA",
+"6295096890":"DEBOJIT DAS",
+"9875306687":"SAPTADEEP BAG",
+"8002181991":"MOHAN SHAW",
+"7811990534":"ANURAG CHAKRABORTY",
+"7679738805":"ROHIT SARKAR",
+"7439302953":"SURYA PRAMANICK",
+"6291543565":"AYUSHMAN DAS",
+"8910565098":"SUSHMA KUMARI",
+"7047374522":"ANIRBAN BANERJEE",
+"7718586326":"SAMIM MONDAL",
+"9735962209":"SARUAR HOQUE",
+"9641883357":"AHAD ALI",
+"7797933425":"RAMIJ AHAMMED",
+"6290455886":"PRANJAL PRAMANICK",
+"8391932014":"ATASHI DUTTA",
+"7003067199":"SARANYA DAS",
+"9775843708":"MASADUL SK",
+"9832987577":"NITISH ADHIKARY",
+"7439565880":"PIYUSH SINGH",
+"9110963606":"NIKHIL PANDEY",
+"8617738028":"ARKAPRABHA MALLICK",
+"8017947149":"ANURAG HOM ROY",
+"9932881127":"SACHINANDAN DAS",
+"7811023132":"SHUVANKAR MANDAL",
+"9339662904":"ARGHADEEP SAHA",
+"8167739235":"SUDIPTA PAUL",
+"9123811715":"DHRUBAJYOTI NATH",
+"6289220532":"SOUVIK ROY",
+"7477394440":"NISHANT TIRKEY",
+"9635585652":"SANJUKTA HALDER",
+"8637564737":"ABHRANIL ROY",
+"9832234122":"RONI GOPE",
+"8873722734":"SUNDRAM KUMAR",
+"8777699943":"DOLAN KABIRAJ",
+"9073154130":"SHREYA DAS",
+"8653369487":"EJAJ HOSSAIN",
+"8509767920":"SOMNATH PRATIHAR",
+"9382488304":"SIMA SAHA",
+"9163116941":"ANKIT JANGADE",
+"6296692463":"SRISTI BISWAS",
+"8617789990":"ISHIKA BANIK",
+"9693091471":"ANANKSHA BHARTI",
+"8167674452":"SABYASACHI BISWAS",
+"7501093123":"Arindam Samanta",
+"9123689714":"NIPA MONDAL",
+"7866046822":"MD YOUSUF",
+"6294410587":"ARKADIP TALUKDER",
+"9382368880":"PARAMESH CHANDRA DAS",
+"8101528697":"ALI ARMAN",
+"8961451921":"SIMOUL SINGH",
+"7319396863":"SANDIP MAHATA",
+"8348229305":"MD KAIF MONDAL",
+"6295274988":"MD GOLAM MURSHID",
+"9064482289":"IRFAN SK",
+"9046730451":"ROHIT SAHA",
+"9907767858":"SUBHADEEP DAS",
+"7384703536":"PUJA DAS",
+"7836999182":"SOMRIK CHATTERJEE",
+"6296016155":"RUMANA DUTTA",
+"8100424745":"TANIA PAUL",
+"9635654361":"HRITABRATA GHOSAL",
+"9339867114":"SUJOY GHOSH",
+"7812053264":"MD SUBHANUR RAHAMAN",
+"9126278927":"PIU SARKAR",
+"9091185245":"SAMADUR RAHAMAN SHAIKH",
+"8972944416":"SUJOY BISWAS",
+"9239604362":"SUSHREETA HASMI",
+"8609556992":"RAJESH ROY",
+"8116839496":"ARINDAM DAS",
+"8512915935":"AKASH CHAKRABORTY",
+"9242123398":"ANISHA AFROJ",
+"9332924551":"JISAN SEIKH",
+"8509406727":"SRIJAN DEBNATH",
+"7679156171":"ROHIT ROY",
+"7063210217":"PREETI SHARMA",
+"7258960455":"SHUBHENDU KUMAR",
+"9242128840":"TINKU MONDAL",
+"8653286669":"BAIBHAB BISWAS",
+"8328701038":"TANMOY MUKHERJEE",
+"9564956256":"MD NAFIS TAJWAR",
+"9635320257":"BISHNU CHANDRA MONDAL",
+"7029448422":"SOUVIK SAHA",
+"8777052855":"KRISHNA BHAKTA",
+"8250805418":"SUMAN MONDAL",
+"9883061618":"JAYITA DHAR",
+"9339282950":"KOYEL SARKAR",
+"9330160568":"PRITI PRASAD",
+"9339657678":"KUNTAL KAR",
+"9163049451":"SK TOUFEEQ AHAMED",
+"6295916283":"SNIGDHA MONDAL",
+"9903260230":"ANISHA KUMARI",
+"9064988013":"RAJESH DAS",
+"9126849747":"MD MEHEBUB AKTAR",
+"9641584467":"ASIK IQUEBAL",
+"7979433617":"ANIMESH PARAMANIK",
+"":"MANIDWIPTAM HALDER",
+"8389837278":"SOUMAVA PRAMANICK",
+"7029891404":"SOUMYADEEP SINGHA",
+"7029044771":"ARMAN SK",
+"8389018997":"KAPIL DEB BISWAS",
+"8961779661":"ARPITA BANARJEE",
+"8389848716":"ABHIJIT PAL",
+"7431836926":"TUHIN KUMAR DAS",
+"9007973851":"AMBIK MONDAL",
+"9775318150":"MD.SK SOYEB",
+"9064357981":"SUBHADIP ROY",
+"8509063684":"Dipankar Pramanick",
+"9907249296":"ABHIJIT SUTRADHAR",
+"8649881370":"AMIT BIKRAM MISHRA",
+"7980964248":"RAGANI SHAW",
+"9330522144":"SNEHA MALO",
+"9681629593":"BIRAJ BANERJEE"
+
+};
+
+function verify() {
+  let phone = document.getElementById("phone").value.trim();
+  let msg = document.getElementById("msg");
+
+  if(students[phone]) {
+    document.getElementById("section").style.display = "block";
+    document.getElementById("name").value = students[phone];
+
+    msg.innerText = "Verified Successfully ✅";
+    msg.className = "ok";
+  } else {
+    msg.innerText = "Not Eligible ❌";
+    msg.className = "error";
+  }
+}
+
+function generatePDF() {
+  let name = document.getElementById("name").value;
+
+  if(name === "") return;
+
+  document.getElementById("loader").style.display = "block";
+
+  const doc = new jsPDF('landscape');
+
+  const images = [
+    "cert1.jpg",
+    "cert2.jpg",
+    "cert3.jpg",
+    "cert4.jpg",
+    "cert5.jpg"
+  ];
+
+  let loaded = 0;
+  let imgElements = [];
+
+  images.forEach((src, index) => {
+    let img = new Image();
+    img.src = src;
+
+    img.onload = function() {
+      imgElements[index] = img;
+      loaded++;
+
+      if(loaded === images.length) {
+
+        for(let i = 0; i < 5; i++) {
+
+          doc.addImage(imgElements[i], 'JPEG', 0, 0, 297, 210);
+
+          doc.setFont("Courier", "bold");
+          doc.setFontSize(30);
+
+          const textWidth = doc.getTextWidth(name);
+          const x = (297 - textWidth) / 2;
+          const y = 124;
+
+          doc.text(name, x, y);
+
+          if(i < 4) doc.addPage();
+        }
+
+        doc.save(name + "_certificates.pdf");
+
+        document.getElementById("loader").style.display = "none";
+      }
+    }
+  });
+}
+</script>
+
+</body>
+</html>
